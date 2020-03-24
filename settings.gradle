@@ -1,0 +1,2 @@
+rootProject.name='InstantCMS Client'
+include ':app'
