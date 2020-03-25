@@ -2,4 +2,6 @@
     <string name="app_name">InstantCMS Client</string>
     <string name="app_logo">Logo</string>
     <string name="app_login">Войти</string>
+    <string name="app_settings">Настроки</string>
+    <string name="app_messages">Сообщения</string>
 </resources>
