@@ -6,4 +6,6 @@
     <color name="colorLoginButton">#EAEAEA</color>
     <color name="colorLoginButtonText">#30659B</color>
     <color name="colorHeaderBG">#30659B</color>
+    <color name="colorNewsTitle">#09c</color>
+    <color name="colorDate">#999</color>
 </resources>
