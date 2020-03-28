@@ -241,8 +241,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View page) {
             newsLink = pages.get(page);
-            if(!((Button) page).getText().equals("<") || !((Button) page).getText().equals(">")) {
+            if(((Button) page).getText().toString().trim().matches("^[0-9]*$")) {
                 pageNum = Integer.parseInt(((Button) page).getText().toString());
+            }
+            else {
+                if(((Button) page).getText().toString().equals(">"))
+                {
+                    pageNum++;
+                }
+                else {
+                    pageNum--;
+                }
             }
             LinearLayout content = (LinearLayout) findViewById(R.id.contentCOntainer);
             ScrollView newsScroll = (ScrollView) findViewById(R.id.newsScroll);
