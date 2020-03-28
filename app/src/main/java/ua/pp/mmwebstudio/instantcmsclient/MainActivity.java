@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View page) {
             newsLink = pages.get(page);
-            if(!((Button) page).getText().equals("Предыдущая") || !((Button) page).getText().equals("Следующая")) {
+            if(!((Button) page).getText().equals("<") || !((Button) page).getText().equals(">")) {
                 pageNum = Integer.parseInt(((Button) page).getText().toString());
             }
             LinearLayout content = (LinearLayout) findViewById(R.id.contentCOntainer);
