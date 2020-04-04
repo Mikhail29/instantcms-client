@@ -4,21 +4,28 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,7 +33,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
+
+import javax.security.auth.login.LoginException;
 
 public class MainActivity extends AppCompatActivity {
     private Elements elements, pages_elements;
@@ -37,12 +48,39 @@ public class MainActivity extends AppCompatActivity {
     private String error_message = "";
     private String newsLink = "https://instantcms.ru/novosti";
     int pageNum = 1;
+    private Boolean is_autorized = false;
+    SharedPreferences Pref;
+    HashMap<String, String> cookies;
+    final String pref_name_file = "ICMSClSettings";
+    final String autorized_param = "is_autorized";
+    final String cookies_params = "cookies";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button retry = (Button) findViewById(R.id.retry);
+        Button login = (Button) findViewById(R.id.loginButton);
+        Pref = getSharedPreferences(pref_name_file, MODE_PRIVATE);
+        cookies = new HashMap<String, String>();
+        ImageButton messageButton = (ImageButton) findViewById(R.id.messagesButton);
+        login.setOnClickListener(loginClick);
+        if(Pref.getString(autorized_param, "0").equals("1"))
+        {
+            is_autorized = true;
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String, String>>(){}.getType();
+            String cookie_string = Pref.getString(cookies_params, "");
+            if(!cookie_string.equals("")) {
+                cookies.putAll((Map)gson.fromJson(cookie_string, type));
+                login.setText(R.string.app_logout);
+            }
+        }
+        else
+        {
+            is_autorized = false;
+            messageButton.setOnClickListener(loginClick);
+        }
         retry.setOnClickListener(retryClick);
         links = new HashMap<LinearLayout, String>();
         pages = new HashMap<Button, String>();
@@ -53,6 +91,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        Button login = (Button) findViewById(R.id.loginButton);
+        Pref = getSharedPreferences(pref_name_file, MODE_PRIVATE);
+        login.setEnabled(true);
+        if(Pref.getString(autorized_param, "0").equals("1"))
+        {
+            is_autorized = true;
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String, String>>(){}.getType();
+            String cookie_string = Pref.getString(cookies_params, "");
+            if(!cookie_string.equals("")) {
+                cookies.clear();
+                cookies.putAll((Map)gson.fromJson(cookie_string, type));
+                login.setText(R.string.app_logout);
+            }
+        }
+        else
+        {
+            is_autorized = false;
+            login.setOnClickListener(loginClick);
+        }
         LinearLayout content = (LinearLayout) findViewById(R.id.contentCOntainer);
         RelativeLayout progressBarContainer = (RelativeLayout) findViewById(R.id.progress_bar_container);
         RelativeLayout errorContainer = (RelativeLayout) findViewById(R.id.errorContainer);
@@ -63,12 +121,43 @@ public class MainActivity extends AppCompatActivity {
         parseTask.execute();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Button login = (Button) findViewById(R.id.loginButton);
+        Pref = getSharedPreferences(pref_name_file, MODE_PRIVATE);
+        login.setEnabled(true);
+        if(Pref.getString(autorized_param, "0").equals("1"))
+        {
+            is_autorized = true;
+            Gson gson = new Gson();
+            Type type = new TypeToken<Map<String, String>>(){}.getType();
+            String cookie_string = Pref.getString(cookies_params, "");
+            if(!cookie_string.equals("")) {
+                cookies.clear();
+                cookies.putAll((Map)gson.fromJson(cookie_string, type));
+                login.setText(R.string.app_logout);
+            }
+        }
+        else
+        {
+            is_autorized = false;
+            login.setOnClickListener(loginClick);
+        }
+    }
+
     class NewsParseTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             Document newsDoc = null;
             try {
-                newsDoc = Jsoup.connect(newsLink).get();
+                if(cookies.isEmpty())
+                {
+                    newsDoc = Jsoup.connect(newsLink).get();
+                }
+                else {
+                    newsDoc = Jsoup.connect(newsLink).cookies(cookies).get();
+                }
                 elements = newsDoc.select("#main div.contentlist>h3.con_title, #main div.contentlist>div.con_desc, #main div.contentlist>div.con_details");
                 pages_elements = newsDoc.select("#main div.component div.pagebar>span.pagebar_current, #main div.component div.pagebar>a.pagebar_page");
                 is_network_error = false;
@@ -89,6 +178,45 @@ public class MainActivity extends AppCompatActivity {
             else {
                 setNewsResult();
             }
+        }
+    }
+
+    class ExitTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                Jsoup.connect("https://instantcms.ru/logout").cookies(cookies).get();
+                is_network_error = false;
+            } catch (IOException e) {
+                is_network_error = true;
+                error_message = e.getLocalizedMessage();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void Result) {
+            super.onPostExecute(Result);
+            if(is_network_error)
+            {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        error_message, Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            }
+            else {
+                Pref = getSharedPreferences(pref_name_file, MODE_PRIVATE);
+                SharedPreferences.Editor ed = Pref.edit();
+                ed.putString(cookies_params, "");
+                ed.putString(autorized_param, "0");
+                ed.apply();
+                Button login = (Button) findViewById(R.id.loginButton);
+                login.setText(R.string.app_login);
+                cookies.clear();
+                is_autorized = false;
+            }
+            RelativeLayout exitLayout = (RelativeLayout) findViewById(R.id.loadExit);
+            exitLayout.setVisibility(View.GONE);
         }
     }
 
@@ -234,6 +362,24 @@ public class MainActivity extends AppCompatActivity {
             progressBarContainer.setVisibility(RelativeLayout.VISIBLE);
             NewsParseTask parseTask = new NewsParseTask();
             parseTask.execute();
+        }
+    };
+
+    private View.OnClickListener loginClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View article) {
+            if(!is_autorized) {
+                Button login = (Button) findViewById(R.id.loginButton);
+                login.setEnabled(false);
+                Intent intent = new Intent(MainActivity.this.getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+            else {
+                RelativeLayout exitLayout = (RelativeLayout) findViewById(R.id.loadExit);
+                exitLayout.setVisibility(View.VISIBLE);
+                ExitTask exit = new ExitTask();
+                exit.execute();
+            }
         }
     };
 
