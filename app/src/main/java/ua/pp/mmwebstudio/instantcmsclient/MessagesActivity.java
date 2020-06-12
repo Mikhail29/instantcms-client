@@ -157,22 +157,52 @@ public class MessagesActivity extends AppCompatActivity {
         LinearLayout messagesList = (LinearLayout) findViewById(R.id.messagesList);
         LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lParams.setMargins(0, 0, 0, 10);
-        LinearLayout.LayoutParams lvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        LinearLayout.LayoutParams lvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lvParams.setMargins(0, 0, 0, 0);
-        LinearLayout message = new LinearLayout(this);
-        message.setOrientation(LinearLayout.VERTICAL);
-        message.setLayoutParams(lParams);
         messagesList.removeAllViews();
         paginator.removeAllViews();
         pages.clear();
         for (Element el : message_elements)
         {
-            LinearLayout head = new LinearLayout(this);
-            head.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout message = new LinearLayout(this);
+            message.setOrientation(LinearLayout.VERTICAL);
+            message.setLayoutParams(lParams);
+            RelativeLayout head = new RelativeLayout(this);
             head.setLayoutParams(lvParams);
             LinearLayout body = new LinearLayout(this);
             body.setOrientation(LinearLayout.HORIZONTAL);
             body.setLayoutParams(lvParams);
+            RelativeLayout.LayoutParams lhcParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lhcParams.setMargins(0, 0, 0, 0);
+            lhcParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            LinearLayout headCaptions = new LinearLayout(this);
+            headCaptions.setOrientation(LinearLayout.HORIZONTAL);
+            headCaptions.setLayoutParams(lhcParams);
+            head.addView(headCaptions);
+            RelativeLayout.LayoutParams lhlParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lhlParams.setMargins(0, 0, 0, 0);
+            lhlParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            lhlParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            LinearLayout headLinks = new LinearLayout(this);
+            headLinks.setOrientation(LinearLayout.HORIZONTAL);
+            headLinks.setLayoutParams(lhlParams);
+            head.addView(headLinks);
+
+            TextView author = new TextView(this);
+            author.setTextSize(18);
+            author.setTextColor(getResources().getColor(R.color.colorNewsTitle));
+            Element AuthorLinkA = el.select(":root > table:nth-child(1) > tbody > tr > td:nth-child(1) > strong").first();
+            author.setText(AuthorLinkA.text());
+            headCaptions.addView(author);
+
+            TextView test = new TextView(this);
+            test.setTextSize(15);
+            test.setTextColor(getResources().getColor(R.color.colorNewsTitle));
+            test.setText("Test link");
+            headLinks.addView(test);
+            message.addView(head);
+            message.addView(body);
+            //messagesList.addView(message);
         }
         RelativeLayout progressBarContainer = (RelativeLayout) findViewById(R.id.message_progress_bar_container);
         RelativeLayout errorContainer = (RelativeLayout) findViewById(R.id.messageErrorContainer);
