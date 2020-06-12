@@ -118,39 +118,45 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <LinearLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/messageContentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="gone" >
-            <ScrollView
-                android:id="@+id/messagesScroll"
+            <LinearLayout
+                android:id="@+id/messageContentSubContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.9">
-
-                <LinearLayout
-                    android:id="@+id/messagesList"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+                <ScrollView
+                    android:id="@+id/messagesScroll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="0dp"
-                    android:orientation="vertical">
+                    android:layout_weight="0.9">
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/messagesList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="0dp"
+                        android:orientation="vertical">
 
-            </ScrollView>
+                    </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/messagePaginator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"
-                android:orientation="horizontal" />
-        </LinearLayout>
+                </ScrollView>
+
+                <LinearLayout
+                    android:id="@+id/messagePaginator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="0.1"
+                    android:orientation="horizontal" />
+            </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

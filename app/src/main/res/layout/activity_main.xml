@@ -134,40 +134,47 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <LinearLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/contentCOntainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone" >
-        <ScrollView
-            android:id="@+id/newsScroll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.9">
-
+            android:visibility="gone"
+            app:swipeRefreshLayoutProgressSpinnerBackgroundColor="@color/colorAccent">
             <LinearLayout
-                android:id="@+id/newsList"
+                android:id="@+id/contentSubContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="0dp"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+                <ScrollView
+                    android:id="@+id/newsScroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.9">
 
+                    <LinearLayout
+                        android:id="@+id/newsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="0dp"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                </ScrollView>
+
+                <LinearLayout
+                    android:id="@+id/paginator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="0.1"
+                    android:orientation="horizontal" />
             </LinearLayout>
-
-        </ScrollView>
-
-            <LinearLayout
-                android:id="@+id/paginator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"
-                android:orientation="horizontal" />
-        </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
     <RelativeLayout

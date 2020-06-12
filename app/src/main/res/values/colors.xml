@@ -9,4 +9,7 @@
     <color name="colorNewsTitle">#09c</color>
     <color name="colorDate">#999</color>
     <color name="colorTextCurrentPage">#FFFFFF</color>
+    <color name="light_blue">#AFEEEE</color>
+    <color name="middle_blue">#6495ED</color>
+    <color name="deep_blue">#0000FF</color>
 </resources>

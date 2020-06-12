@@ -1,6 +1,7 @@
 package ua.pp.mmwebstudio.instantcmsclient;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -115,7 +116,7 @@ public class MessagesActivity extends AppCompatActivity {
 
     private void showError()
     {
-        LinearLayout content = (LinearLayout) findViewById(R.id.messageContentContainer);
+        SwipeRefreshLayout content = (SwipeRefreshLayout) findViewById(R.id.messageContentContainer);
         RelativeLayout progressBarContainer = (RelativeLayout) findViewById(R.id.message_progress_bar_container);
         RelativeLayout errorContainer = (RelativeLayout) findViewById(R.id.messageErrorContainer);
         TextView errorMessage = (TextView) findViewById(R.id.merrorMessage);
@@ -128,7 +129,7 @@ public class MessagesActivity extends AppCompatActivity {
     private View.OnClickListener retryClick = new View.OnClickListener() {
         @Override
         public void onClick(View article) {
-            LinearLayout content = (LinearLayout) findViewById(R.id.messageContentContainer);
+            SwipeRefreshLayout content = (SwipeRefreshLayout) findViewById(R.id.messageContentContainer);
             RelativeLayout progressBarContainer = (RelativeLayout) findViewById(R.id.message_progress_bar_container);
             RelativeLayout errorContainer = (RelativeLayout) findViewById(R.id.messageErrorContainer);
             content.setVisibility(View.GONE);
