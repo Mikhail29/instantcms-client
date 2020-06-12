@@ -9,5 +9,6 @@
     <string name="prompt_password">Пароль</string>
     <string name="prompt_email">Логин или E-Mail</string>
     <string name="wrongLoginData">Неверный логин или пароль</string>
+    <string name="app_need_auth">Для выполнения данного действия требуется авторизация</string>
     <string name="app_logout">Выход</string>
 </resources>

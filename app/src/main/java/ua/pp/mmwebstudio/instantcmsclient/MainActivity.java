@@ -387,8 +387,14 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener messagesClick = new View.OnClickListener() {
         @Override
         public void onClick(View article) {
-            Intent intent = new Intent(MainActivity.this.getApplicationContext(), MessagesActivity.class);
-            startActivity(intent);
+            if(!is_autorized) {
+                error_message = getResources().getString(R.string.app_need_auth);
+                showError();
+            }
+            else {
+                Intent intent = new Intent(MainActivity.this.getApplicationContext(), MessagesActivity.class);
+                startActivity(intent);
+            }
         }
     };
 
