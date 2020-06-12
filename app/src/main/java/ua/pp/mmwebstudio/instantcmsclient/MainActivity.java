@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         Pref = getSharedPreferences(pref_name_file, MODE_PRIVATE);
         cookies = new HashMap<String, String>();
         ImageButton messageButton = (ImageButton) findViewById(R.id.messagesButton);
+        messageButton.setOnClickListener(messagesClick);
         login.setOnClickListener(loginClick);
         if(Pref.getString(autorized_param, "0").equals("1"))
         {
@@ -380,6 +381,14 @@ public class MainActivity extends AppCompatActivity {
                 ExitTask exit = new ExitTask();
                 exit.execute();
             }
+        }
+    };
+
+    private View.OnClickListener messagesClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View article) {
+            Intent intent = new Intent(MainActivity.this.getApplicationContext(), MessagesActivity.class);
+            startActivity(intent);
         }
     };
 
