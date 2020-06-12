@@ -125,13 +125,13 @@
             android:orientation="vertical"
             android:visibility="gone" >
             <ScrollView
-                android:id="@+id/newsScroll"
+                android:id="@+id/messagesScroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9">
 
                 <LinearLayout
-                    android:id="@+id/newsList"
+                    android:id="@+id/messagesList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"

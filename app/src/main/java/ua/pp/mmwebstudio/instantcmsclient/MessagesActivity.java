@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -140,6 +141,19 @@ public class MessagesActivity extends AppCompatActivity {
 
     private void showMessages()
     {
+        LinearLayout paginator = (LinearLayout) findViewById(R.id.messagePaginator);
+        LinearLayout messagesList = (LinearLayout) findViewById(R.id.messagesList);
+        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lParams.setMargins(0, 0, 0, 10);
+        LinearLayout message = new LinearLayout(this);
+        message.setOrientation(LinearLayout.VERTICAL);
+        message.setLayoutParams(lParams);
+        messagesList.removeAllViews();
+        paginator.removeAllViews();
+        pages.clear();
+        for (Element el : message_elements)
+        {
 
+        }
     }
 }
