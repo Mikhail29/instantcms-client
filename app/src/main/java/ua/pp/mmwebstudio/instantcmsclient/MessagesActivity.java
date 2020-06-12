@@ -65,6 +65,10 @@ public class MessagesActivity extends AppCompatActivity {
             is_autorized = false;
         }
         pages = new HashMap<Button, String>();
+        SwipeRefreshLayout content = (SwipeRefreshLayout) findViewById(R.id.messageContentContainer);
+        content.setOnRefreshListener(swipeRefreshMessages);
+        content.setColorSchemeResources
+                (R.color.light_blue, R.color.middle_blue,R.color.deep_blue);
         GetMessages messagesLoader = new GetMessages();
         messagesLoader.execute();
     }
@@ -83,20 +87,27 @@ public class MessagesActivity extends AppCompatActivity {
             Document messageDoc = null;
             Elements messageLink;
             mLink = "";
-            try {
-                mainDoc = Jsoup.connect("https://instantcms.ru/").cookies(cookies).get();
-                messageLink = mainDoc.select("#head_center > div.grid_9 > div > div > div > span:nth-child(2) > a");
-                is_network_error = false;
-                for (Element el : messageLink)
-                {
-                    mLink = "https://instantcms.ru" + el.attr("href");
+            if (is_autorized)
+            {
+                try {
+                    mainDoc = Jsoup.connect("https://instantcms.ru/").cookies(cookies).get();
+                    messageLink = mainDoc.select("#head_center > div.grid_9 > div > div > div > span:nth-child(2) > a");
+                    is_network_error = false;
+                    for (Element el : messageLink) {
+                        mLink = "https://instantcms.ru" + el.attr("href");
+                    }
+                    messageDoc = Jsoup.connect(mLink).cookies(cookies).get();
+                    message_elements = messageDoc.select("#main > div.component > div:nth-child(4) > div.usr_msg_entry");
+                    pages_elements = messageDoc.select("#main div.component div.pagebar>span.pagebar_current, #main div.component div.pagebar>a.pagebar_page");
+                } catch (IOException e) {
+                    is_network_error = true;
+                    error_message = e.getLocalizedMessage();
                 }
-                messageDoc = Jsoup.connect(mLink).cookies(cookies).get();
-                message_elements = messageDoc.select("#main > div.component > div:nth-child(4) > div.usr_msg_entry");
-                pages_elements = messageDoc.select("#main div.component div.pagebar>span.pagebar_current, #main div.component div.pagebar>a.pagebar_page");
-            } catch (IOException e) {
+            }
+            else
+            {
                 is_network_error = true;
-                error_message = e.getLocalizedMessage();
+                error_message = getResources().getString(R.string.app_need_auth);
             }
             return null;
         }
@@ -146,6 +157,8 @@ public class MessagesActivity extends AppCompatActivity {
         LinearLayout messagesList = (LinearLayout) findViewById(R.id.messagesList);
         LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lParams.setMargins(0, 0, 0, 10);
+        LinearLayout.LayoutParams lvParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lvParams.setMargins(0, 0, 0, 0);
         LinearLayout message = new LinearLayout(this);
         message.setOrientation(LinearLayout.VERTICAL);
         message.setLayoutParams(lParams);
@@ -154,7 +167,25 @@ public class MessagesActivity extends AppCompatActivity {
         pages.clear();
         for (Element el : message_elements)
         {
-
+            LinearLayout head = new LinearLayout(this);
+            head.setOrientation(LinearLayout.HORIZONTAL);
+            head.setLayoutParams(lvParams);
+            LinearLayout body = new LinearLayout(this);
+            body.setOrientation(LinearLayout.HORIZONTAL);
+            body.setLayoutParams(lvParams);
         }
+        RelativeLayout progressBarContainer = (RelativeLayout) findViewById(R.id.message_progress_bar_container);
+        RelativeLayout errorContainer = (RelativeLayout) findViewById(R.id.messageErrorContainer);
+        SwipeRefreshLayout content = (SwipeRefreshLayout) findViewById(R.id.messageContentContainer);
+        progressBarContainer.setVisibility(RelativeLayout.GONE);
+        errorContainer.setVisibility(RelativeLayout.GONE);
+        content.setVisibility(View.VISIBLE);
     }
+
+    private SwipeRefreshLayout.OnRefreshListener swipeRefreshMessages = new SwipeRefreshLayout.OnRefreshListener() {
+        public void onRefresh() {
+            SwipeRefreshLayout content = (SwipeRefreshLayout) findViewById(R.id.messageContentContainer);
+            content.setRefreshing(false);
+        }
+    };
 }
