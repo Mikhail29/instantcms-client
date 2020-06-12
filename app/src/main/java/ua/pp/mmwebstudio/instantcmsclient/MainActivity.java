@@ -571,7 +571,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             SwipeRefreshLayout content = (SwipeRefreshLayout) findViewById(R.id.contentCOntainer);
-            ScrollView newsScroll = (ScrollView) findViewById(R.id.newsScroll);
             RelativeLayout progressBarContainer = (RelativeLayout) findViewById(R.id.progress_bar_container);
             RelativeLayout errorContainer = (RelativeLayout) findViewById(R.id.errorContainer);
             content.setVisibility(View.GONE);
